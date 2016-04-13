@@ -1,0 +1,15 @@
+{% extends "whl_base.html" %}
+
+{% block title %}
+Welcome to WoohooList!
+{% endblock %}
+
+{% block content %}
+    <p>Sign up today!</p><br>
+    <form method="post">
+        {%  csrf_token %}
+        {{ form }}
+        <input type="submit">
+    </form>
+
+{% endblock %}

@@ -1,0 +1,113 @@
+{% extends "whl_base.html" %}
+
+{% block title %}
+Welcome, {{ user.user.username }}!
+{% endblock %}
+
+{% block content %}
+
+<div class="box">
+    {% if my_profile %}
+
+        <h2>Hi, {{ user.user.username }}!</h2>
+
+    {% else %}
+        <h2>You are viewing {{ profile_user.user.username }}'s profile.</h2>
+
+        {% if friend_profile %}
+            <button class="btn btn-danger btn-lg" id="friend_button" data-action="remove" data-user_id="{{ profile_user.id }}">
+                Unfriend user
+            </button><br><br>
+        {% else %}
+            <button class="btn btn-primary btn-lg" id="friend_button" data-action="add" data-user_id="{{ profile_user.id }}">
+                Friend user
+            </button><br><br>
+
+        {% endif %}
+
+    {% endif %}
+
+    {% if my_profile %}
+        <p>You have <strong>{{ user.points }} points</strong>. Woohoo!</p>
+    {% else %}
+        <p>Current score: <strong>{{ profile_user.points }} points</strong>. Woohoo!</p>
+    {% endif %}
+
+
+    {% if current_goal %}
+        <h3>
+            <strong>Current goal: </strong>
+            <a href="{% url 'goal_detail_page' current_goal.id %}">{{ current_goal.title }}</a>
+        </h3>
+
+</div>
+
+        {% if my_profile %}
+            <div class="box">
+                <p><strong>Check out these users with goals similar to yours!</strong></p>
+
+                {% for goal in similar_goals %}
+                    <p><a href="{% url 'profile_page' goal.creator.user.username %}">{{ goal.creator.user.username }}</a>
+                    wants to <a href="{% url 'goal_detail_page' goal.id %}">{{ goal.title }}</a></p>
+                {% endfor %}
+            </div>
+
+        {% endif %}
+
+    {% else %}
+        {% if my_profile %}
+            <a href="{% url 'goal_setting_page' user.user.username %}" class="btn btn-primary btn-lg">
+                Add a goal
+            </a>
+        {% else %}
+            Looks like this person doesn't have a current goal.
+        {% endif %}
+    {% endif %}
+
+<div class="box">
+    <p><strong>Past goals:</strong></p>
+    {% if past_goals %}
+        {% for goal in past_goals %}
+            <p>{{ goal.title }}</p>
+        {% endfor %}
+
+    {% else %}
+        <p>Aww, no completed goals... yet!</p>
+
+    {% endif %}
+</div>
+
+    <script>
+        document.getElementById('friend_button').addEventListener('click', function(e){
+            var elt = e.target;
+            var user_id = elt.getAttribute("data-user_id");
+            var action = elt.getAttribute("data-action");
+
+            var xhr = new XMLHttpRequest();
+
+            xhr.onreadystatechange = function() {
+
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    var data = JSON.parse(xhr.responseText);
+                    if (data.result) {
+                        $('#friend_button').remove();
+                        window.location.reload();
+                    }
+                    else {
+                        alert(data.error);
+                        // TODO: User friendly error message
+                    }
+                }
+
+            }
+
+            xhr.open("POST", '{% url 'friend_someone' %}', true);
+            xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token }}');
+            xhr.setRequestHeader('content-type', 'application/x-www-form-urlencoded');
+                var postdata = "user_id=" + user_id + "&action=" + action;
+                xhr.send(postdata);
+
+        });
+    </script>
+
+{% endblock %}

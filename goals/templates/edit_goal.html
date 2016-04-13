@@ -1,0 +1,15 @@
+{% extends "whl_base.html" %}
+
+{% block title %}
+Sometimes goals change...
+{% endblock %}
+
+{% block content %}
+<div>
+    <form method="post">
+        {% csrf_token %}
+        {{ form }}
+        <input type="submit" value="Woohoo!">
+    </form>
+</div>
+{% endblock %}

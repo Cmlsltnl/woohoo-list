@@ -1,0 +1,29 @@
+{% extends "whl_base.html" %}
+
+{% block title %}
+    You signed up! Woohoo!
+{% endblock %}
+
+{% block content %}
+
+<div class="box">
+    <p>Thanks for signing up, {{ user.user.username }}!</p>
+
+    <p>Making a commitment to work on your goals is important. You get 30 points just for doing so.</p>
+
+    <p>Here's how it works: you choose a goal, a nice big one, like running a marathon.</p>
+
+    <p>Then you break it down into manageable steps you can do in a week or a day and set a projected timeline.</p>
+
+    <p>You make friends with others who have similar current goals and cheer each other on.</p>
+
+    <p>Along the way, you'll earn points for completing steps toward your goal and for encouraging others.</p>
+
+    <p>Sounds great, right? Let's get started! Woohoo!</p>
+
+    <a href="{% url 'goal_setting_page' user.user.username %}" class="btn btn-primary btn-lg">
+        Add a goal
+    </a>
+</div>
+
+{% endblock %}

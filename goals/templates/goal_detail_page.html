@@ -1,0 +1,94 @@
+{% extends "whl_base.html" %}
+
+{% block title %}
+    {{ goal.title }}
+{% endblock %}
+
+{% block content %}
+
+    <div class="box">
+        {% if my_profile %}
+            <h2>My current goal: {{ goal.title }}</h2>
+
+        {% else %}
+            <h2>{{ profile_user.username }}'s current goal: {{ goal.title }}</h2>
+        {% endif %}
+
+
+        <p>Target completion date: {{ goal.completion_date }}</p>
+    </div>
+
+
+<div class="box">
+    {% if incomplete_steps %}
+        <p>Here's the next step: {{ incomplete_steps.first.detail }}</p>
+        <p>{{ incomplete_steps.count }} step{{ incomplete_steps.count|pluralize:"s" }} left to go.</p>
+
+        <p>Here are all the steps in this goal:</p>
+
+        <table id="step_list">
+            {% for step in steps %}
+                <tr>
+                    <td>
+                        <div>
+                            <p>
+                                {% if my_profile %}
+                                    {% if not step.completed %}
+                                        <button type="button" class="btn btn-default btn-xs"
+                                                aria-label="Check!" data-step_id="{{ step.id }}">
+                                            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Check!
+                                        </button>
+                                    {% endif %}
+                                {% endif %}
+                                Step {{ step.step_number }}: {{ step.detail }}
+                                <a href="{% url 'step_detail_page' step_id=step.id goal_id=goal.id %}">See more</a>
+                            </p>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+
+    {% else %}
+        <p>I completed my goal! WOOHOO!</p>
+
+{#        TODO: Fancier reward here!#}
+
+    {% endif %}
+
+</div>
+<script>
+    document.getElementById('step_list').addEventListener('click', function(e){
+        if (e.target.nodeName == 'BUTTON') {
+            var clicked_button = e.target;
+            var step_id = clicked_button.getAttribute("data-step_id");
+
+            var xhr = new XMLHttpRequest();
+
+		    xhr.onreadystatechange = function() {
+
+                if(xhr.readyState === 4 && xhr.status === 200){
+                    var data = JSON.parse(xhr.responseText);
+                    if(data.result) {
+                        $( clicked_button ).remove();
+                        if(data.completed) {
+                            window.location.reload();
+                        }
+                    }
+                    else {
+                        alert(data.error);
+                        // TODO: User friendly error message
+                    }
+                }
+            }
+
+            xhr.open("POST", '{% url 'step_completion' %}', true);
+            xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token }}');
+            xhr.setRequestHeader('content-type', 'application/x-www-form-urlencoded');
+
+                var postdata = "step_id=" + step_id;
+                xhr.send(postdata);
+		}
+
+    });
+</script>
+{% endblock %}

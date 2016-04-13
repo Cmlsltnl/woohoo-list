@@ -1,0 +1,68 @@
+{% extends "whl_base.html" %}
+
+{% block title %}
+This step: {{ step.detail }}
+{% endblock %}
+
+{% block content %}
+<div class="box">
+    {% if my_profile %}
+        <h2>My current goal: <a href="{% url 'goal_detail_page' goal.id %}">{{ goal.title }}</a></h2>
+
+    {% else %}
+        <h2>{{ profile_user.username }}'s current goal: {{ goal.title }}</h2>
+    {% endif %}
+</div>
+
+<div class="box">
+    <h2>This is step number {{ step.step_number }}: {{ step.detail }}</h2>
+
+    {% if step.completed %}
+        <p>Woohoo! Done!!!</p>
+        {% for comment in comments %}
+            <p><a href="{% url 'profile_page' comment.author %}">{{ comment.author }}</a> commented on {{ comment.comment_date }}</p>
+            <p>{{ comment.content }}</p>
+            <p>*****</p>
+        {% endfor %}
+
+        {% if not my_profile %}
+            <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+                Add comment
+            </button><br><br>
+
+            <div class="modal fade" id="myModal">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Add a Comment</h4>
+                  </div>
+                  <div class="modal-body">
+                    <p>Go ahead, congratulate them!</p>
+                      <form method="post">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                  </div>
+                      </form>
+                </div><!-- /.modal-content -->
+              </div><!-- /.modal-dialog -->
+            </div><!-- /.modal -->
+
+
+        {% endif %}
+
+    {% else %}
+        <p>This step should be completed by: {{ step.target_date }}</p>
+        {% if my_profile %}
+            <p>When it's completed, your friends will be able to congratulate you here!</p>
+        {% else %}
+            <p>Don't forget to congratulate them when they're done!</p>
+        {% endif %}
+
+    {% endif %}
+</div>
+{% endblock %}

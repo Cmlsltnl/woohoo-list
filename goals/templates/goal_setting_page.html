@@ -1,0 +1,24 @@
+{% extends "whl_base.html" %}
+
+{% block title %}
+Set a goal! Woohoo!
+{% endblock %}
+
+{% block content %}
+    <p>Here are a few tips for choosing a goal. Make sure it's SMART:</p>
+    <ol>
+        <li>Specific ("Run a 5K" is better than "Exercise more.")</li>
+        <li>Measurable (something you can break down into specific steps)</li>
+        <li>Achievable (reach for the stars, but remember how good it feels to check something off your list)</li>
+        <li>Results-Focused (think about what you want to have done)</li>
+        <li>Time-bound (set a completion date and keep in mind how much you'll need to do each day/week)</li>
+    </ol>
+    <p>The title of your goal should complete the sentence "I want to ____."</p>
+    <div>
+        <form method="post">
+            {% csrf_token %}
+            {{ form }}
+            <input type="submit" value="Woohoo!">
+        </form>
+    </div>
+{% endblock %}

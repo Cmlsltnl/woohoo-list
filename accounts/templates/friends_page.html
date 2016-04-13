@@ -1,0 +1,24 @@
+{% extends "whl_base.html" %}
+
+{% block title %}
+    My Friends
+{% endblock %}
+
+{% block content %}
+    <h2>Encourage Your Friends!</h2>
+    <p>Here you can see a list of all your friends' recent accomplishments.</p>
+    <p>Don't forget to click on their steps to congratulate them!</p>
+
+    {% for friend_post in friend_posts %}
+        <div class="box">
+            <p>{{ friend_post.friend_user.username }} is working on this goal: {{ friend_post.goal.title }}</p>
+            {% if friend_post.latest_step %}
+                <p>Latest step completed:
+                    <a href="{% url 'step_detail_page' goal_id=friend_post.goal.id step_id=friend_post.latest_step.id %}">
+                        {{ friend_post.latest_step.detail }}</a></p>
+            {% endif %}
+            <p>Completion date: {{ friend_post.latest_step.completed_date }}</p>
+            <p>They are {{ friend_post.percent_done }}% done with this goal.</p>
+        </div>
+    {% endfor %}
+{% endblock %}

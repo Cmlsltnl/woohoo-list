@@ -1,0 +1,26 @@
+{% extends "whl_base.html" %}
+
+{% block title %}
+    Welcome!
+{% endblock %}
+
+{% block content %}
+
+    <div class="box">
+        {% if user.user.is_authenticated %}
+
+            <p>So glad you're here, {{ user.user.username }}!</p>
+
+            <p>Make friends, work on your goals, have fun!</p>
+
+        {% else %}
+
+            <p>Welcome to WoohooList!</p>
+
+            <p>Log in to set goals and make friends with people who will help you achieve them!</p>
+
+            <p>Ah, the power of positive influence.</p>
+
+        {% endif %}
+    <div>
+{% endblock %}
