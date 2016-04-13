@@ -1,9 +1,5 @@
 apptools==4.3.0
 atom==0.3.9
-Canopy==1.5.5.dev8465
-CanopyDataImport-addon==0.0.1
-CanopyDebugger==0.1.2.dev0
-CanopyDebugger-addon==0.1.2.dev0
 casuarius==1.1
 chaco==4.5.0
 codetools==4.2.0
